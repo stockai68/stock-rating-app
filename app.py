@@ -70,19 +70,16 @@ with st.spinner("正在抓取数据并打分..."):
 if not df.empty:
     df['score'] = df.apply(score, axis=1)
     df['recommend'] = df['score'].apply(lambda x: 'Buy' if x >= 75 else ('Hold' if x >= 50 else 'Sell'))
+
+    filter_buy = st.checkbox("✅ 只显示推荐为 Buy 的股票")
     df_display = df[['ticker', 'score', 'recommend', 'pe', 'ps', 'rsi', 'eps_growth', 'moneyflow', 'news_sentiment']]
-    # 添加筛选勾选框
-filter_buy = st.checkbox("✅ 只显示推荐为 Buy 的股票")
 
-# 原始列显示
-df_display = df[['ticker', 'score', 'recommend', 'pe', 'ps', 'rsi', 'eps_growth', 'moneyflow', 'news_sentiment']]
+    if filter_buy:
+        df_display = df_display[df_display['recommend'] == 'Buy']
 
-# 如果用户选择了“只显示Buy”
-if filter_buy:
-    df_display = df_display[df_display['recommend'] == 'Buy']
-
-# 显示结果
-st.dataframe(df_display.sort_values("score", ascending=False), use_container_width=True)
+    st.dataframe(df_display.sort_values("score", ascending=False), use_container_width=True)
 
 else:
     st.warning("未获取到有效数据，请检查股票代码是否正确。")
+
+   
