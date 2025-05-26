@@ -79,43 +79,45 @@ if not df.empty:
         df_display = df_display[df_display['recommend'] == 'Buy']
 
     st.dataframe(df_display.sort_values("score", ascending=False), use_container_width=True)
+    
+if False:
 
-# 展示图表（每只股票一张）
-st.subheader("📊 个股图表：价格 & 资金流")
-st.subheader("📊 个股图表：价格 & 成交额")
-
-for t in df_display['ticker']:
-    stock = yf.Ticker(t)
-    hist = stock.history(period="7d")
-    if hist.empty:
-        continue
-
-    st.markdown(f"### {t} - 收盘价与成交额")
-
-    fig, ax1 = plt.subplots(figsize=(4.5, 1.5))  # 更紧凑
-  # 📏 控制图表大小
-
-    # 折线图：收盘价
-    ax1.plot(hist.index, hist["Close"], color="royalblue", marker="o", label="Close Price")
-    ax1.set_ylabel("Close Price（USD）", color="royalblue")
-    ax1.tick_params(axis="y", labelcolor="royalblue")
-    ax1.set_xticks(hist.index)
-    ax1.set_xticklabels(hist.index.strftime('%m-%d'), rotation=45, ha='right')
-    ax1.set_xlabel("Date")
-
-    # 柱状图：成交额
-    ax2 = ax1.twinx()
-    ax2.bar(hist.index, hist["Volume"] * hist["Close"], alpha=0.3, color="seagreen", label="Trade value")
-    ax2.set_ylabel("Trade Value（USD）", color="seagreen")
-    ax2.tick_params(axis="y", labelcolor="seagreen")
-
-    # 图例
-    lines1, labels1 = ax1.get_legend_handles_labels()
-    lines2, labels2 = ax2.get_legend_handles_labels()
-    ax1.legend(lines1 + lines2, labels1 + labels2, loc="upper left")
-
-    fig.tight_layout()
-    st.pyplot(fig)
+    # 展示图表（每只股票一张）
+    st.subheader("📊 个股图表：价格 & 资金流")
+    st.subheader("📊 个股图表：价格 & 成交额")
+    
+    for t in df_display['ticker']:
+        stock = yf.Ticker(t)
+        hist = stock.history(period="7d")
+        if hist.empty:
+            continue
+    
+        st.markdown(f"### {t} - 收盘价与成交额")
+    
+        fig, ax1 = plt.subplots(figsize=(4.5, 1.5))  # 更紧凑
+      # 📏 控制图表大小
+    
+        # 折线图：收盘价
+        ax1.plot(hist.index, hist["Close"], color="royalblue", marker="o", label="Close Price")
+        ax1.set_ylabel("Close Price（USD）", color="royalblue")
+        ax1.tick_params(axis="y", labelcolor="royalblue")
+        ax1.set_xticks(hist.index)
+        ax1.set_xticklabels(hist.index.strftime('%m-%d'), rotation=45, ha='right')
+        ax1.set_xlabel("Date")
+    
+        # 柱状图：成交额
+        ax2 = ax1.twinx()
+        ax2.bar(hist.index, hist["Volume"] * hist["Close"], alpha=0.3, color="seagreen", label="Trade value")
+        ax2.set_ylabel("Trade Value（USD）", color="seagreen")
+        ax2.tick_params(axis="y", labelcolor="seagreen")
+    
+        # 图例
+        lines1, labels1 = ax1.get_legend_handles_labels()
+        lines2, labels2 = ax2.get_legend_handles_labels()
+        ax1.legend(lines1 + lines2, labels1 + labels2, loc="upper left")
+    
+        fig.tight_layout()
+        st.pyplot(fig)
 
 else:
     st.warning("未获取到有效数据，请检查股票代码是否正确。")
