@@ -92,7 +92,8 @@ for t in df_display['ticker']:
 
     st.markdown(f"### {t} - 收盘价与成交额")
 
-    fig, ax1 = plt.subplots(figsize=(6, 3.5))  # 📏 控制图表大小
+    fig, ax1 = plt.subplots(figsize=(5.5, 2.5))  # 更紧凑
+  # 📏 控制图表大小
 
     # 折线图：收盘价
     ax1.plot(hist.index, hist["Close"], color="royalblue", marker="o", label="Close Price")
