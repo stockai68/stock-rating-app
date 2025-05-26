@@ -95,17 +95,17 @@ for t in df_display['ticker']:
     fig, ax1 = plt.subplots(figsize=(6, 3.5))  # 📏 控制图表大小
 
     # 折线图：收盘价
-    ax1.plot(hist.index, hist["Close"], color="royalblue", marker="o", label="收盘价")
-    ax1.set_ylabel("收盘价（USD）", color="royalblue")
+    ax1.plot(hist.index, hist["Close"], color="royalblue", marker="o", label="Close Price")
+    ax1.set_ylabel("Close Price（USD）", color="royalblue")
     ax1.tick_params(axis="y", labelcolor="royalblue")
     ax1.set_xticks(hist.index)
     ax1.set_xticklabels(hist.index.strftime('%m-%d'), rotation=45, ha='right')
-    ax1.set_xlabel("日期")
+    ax1.set_xlabel("Date")
 
     # 柱状图：成交额
     ax2 = ax1.twinx()
-    ax2.bar(hist.index, hist["Volume"] * hist["Close"], alpha=0.3, color="seagreen", label="成交额")
-    ax2.set_ylabel("成交额（USD）", color="seagreen")
+    ax2.bar(hist.index, hist["Volume"] * hist["Close"], alpha=0.3, color="seagreen", label="Trade value")
+    ax2.set_ylabel("Trade Value（USD）", color="seagreen")
     ax2.tick_params(axis="y", labelcolor="seagreen")
 
     # 图例
