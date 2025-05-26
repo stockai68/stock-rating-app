@@ -82,6 +82,8 @@ if not df.empty:
 
 # 展示图表（每只股票一张）
 st.subheader("📊 个股图表：价格 & 资金流")
+st.subheader("📊 个股图表：价格 & 成交额")
+
 for t in df_display['ticker']:
     stock = yf.Ticker(t)
     hist = stock.history(period="7d")
@@ -90,21 +92,29 @@ for t in df_display['ticker']:
 
     st.markdown(f"### {t} - 收盘价与成交额")
 
-    fig, ax1 = plt.subplots()
+    fig, ax1 = plt.subplots(figsize=(6, 3.5))  # 📏 控制图表大小
 
-    ax1.set_title(f"{t} - 收盘价")
-    ax1.plot(hist.index, hist["Close"], color="blue", marker="o", label="Close Price")
-    ax1.set_ylabel("价格", color="blue")
-    ax1.tick_params(axis="y", labelcolor="blue")
+    # 折线图：收盘价
+    ax1.plot(hist.index, hist["Close"], color="royalblue", marker="o", label="收盘价")
+    ax1.set_ylabel("收盘价（USD）", color="royalblue")
+    ax1.tick_params(axis="y", labelcolor="royalblue")
+    ax1.set_xticks(hist.index)
+    ax1.set_xticklabels(hist.index.strftime('%m-%d'), rotation=45, ha='right')
+    ax1.set_xlabel("日期")
 
+    # 柱状图：成交额
     ax2 = ax1.twinx()
-    ax2.bar(hist.index, hist["Volume"] * hist["Close"], alpha=0.3, color="green", label="成交金额")
-    ax2.set_ylabel("成交额", color="green")
-    ax2.tick_params(axis="y", labelcolor="green")
+    ax2.bar(hist.index, hist["Volume"] * hist["Close"], alpha=0.3, color="seagreen", label="成交额")
+    ax2.set_ylabel("成交额（USD）", color="seagreen")
+    ax2.tick_params(axis="y", labelcolor="seagreen")
+
+    # 图例
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines1 + lines2, labels1 + labels2, loc="upper left")
 
     fig.tight_layout()
     st.pyplot(fig)
-
 
 else:
     st.warning("未获取到有效数据，请检查股票代码是否正确。")
