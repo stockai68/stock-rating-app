@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import streamlit as st
 import yfinance as yf
 import pandas as pd
@@ -78,6 +79,32 @@ if not df.empty:
         df_display = df_display[df_display['recommend'] == 'Buy']
 
     st.dataframe(df_display.sort_values("score", ascending=False), use_container_width=True)
+
+# 展示图表（每只股票一张）
+st.subheader("📊 个股图表：价格 & 资金流")
+for t in df_display['ticker']:
+    stock = yf.Ticker(t)
+    hist = stock.history(period="7d")
+    if hist.empty:
+        continue
+
+    st.markdown(f"### {t} - 收盘价与成交额")
+
+    fig, ax1 = plt.subplots()
+
+    ax1.set_title(f"{t} - 收盘价")
+    ax1.plot(hist.index, hist["Close"], color="blue", marker="o", label="Close Price")
+    ax1.set_ylabel("价格", color="blue")
+    ax1.tick_params(axis="y", labelcolor="blue")
+
+    ax2 = ax1.twinx()
+    ax2.bar(hist.index, hist["Volume"] * hist["Close"], alpha=0.3, color="green", label="成交金额")
+    ax2.set_ylabel("成交额", color="green")
+    ax2.tick_params(axis="y", labelcolor="green")
+
+    fig.tight_layout()
+    st.pyplot(fig)
+
 
 else:
     st.warning("未获取到有效数据，请检查股票代码是否正确。")
